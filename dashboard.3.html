@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>QuickConnect Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(120deg, #89f7fe, #66a6ff);
+            margin: 0;
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .container {
+            display: flex;
+            gap: 30px;
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            width: 50%;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .card h2 {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        textarea {
+            resize: none;
+            height: 80px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 15px;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: #4CAF50;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #43a047;
+        }
+
+        ul {
+            margin-top: 15px;
+            padding-left: 0;
+        }
+
+        li {
+            list-style: none;
+            background: #f4f6f8;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .note {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>📘 QuickConnect – Smart School Communication</h1>
+
+<div class="container">
+
+    <!-- TEACHER CARD -->
+    <div class="card">
+        <h2>👩‍🏫 Teacher Panel</h2>
+
+        <input type="text" id="student" placeholder="Student Name">
+        <textarea id="issue" placeholder="Enter or modify issue"></textarea>
+        <button onclick="saveIssue()">Save Issue</button>
+
+        <p class="note">
+            *Teacher can add or update issues instantly.
+        </p>
+    </div>
+
+    <!-- PARENT CARD -->
+    <div class="card">
+        <h2>👨‍👩‍👧 Parent Panel</h2>
+
+        <input type="text" id="childName" placeholder="Enter Child Name">
+        <button onclick="openParent()">View Issue</button>
+
+        <ul id="parentList"></ul>
+
+        <p class="note">
+            *Parents have read-only access.
+        </p>
+    </div>
+
+</div>
+
+<script>
+function saveIssue() {
+    const student = document.getElementById("student").value;
+    const issue = document.getElementById("issue").value;
+
+    if(student === "" || issue === "") {
+        alert("Please fill all fields");
+        return;
+    }
+
+    let issues = JSON.parse(localStorage.getItem("issues")) || {};
+    issues[student] = issue;
+    localStorage.setItem("issues", JSON.stringify(issues));
+
+    alert("Issue saved successfully!");
+
+    document.getElementById("student").value = "";
+    document.getElementById("issue").value = "";
+}
+
+function openParent() {
+    const name = document.getElementById("childName").value;
+    const list = document.getElementById("parentList");
+    const issues = JSON.parse(localStorage.getItem("issues")) || {};
+
+    list.innerHTML = "";
+
+    if(issues[name]) {
+        list.innerHTML = `<li><b>${name}</b><br>${issues[name]}</li>`;
+    } else {
+        list.innerHTML = `<li>No issue found for this student.</li>`;
+    }
+}
+</script>
+
+</body>
+</html>
